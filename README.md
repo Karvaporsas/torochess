@@ -1,70 +1,159 @@
-# Getting Started with Create React App
+# ToroChess ♟️
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A browser-based multiplayer chess game built with **React** (frontend) and **Node.js** (backend). Features real-time gameplay using Socket.io, draggable chessboard with full move validation, and ready for deployment on Azure.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+```
+torochess/
+├── frontend/                  # React application (Create React App)
+│   ├── public/
+│   ├── src/
+│   │   ├── components/        # Chessboard and game UI
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── package.json
+│   └── ...
+├── backend/                   # Node.js + Express + Socket.io server
+│   ├── src/
+│   │   └── server.js          # Main server file
+│   ├── package.json
+│   └── .env
+├── .gitignore
+└── README.md                  # This file
+```
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Fully interactive draggable chessboard using `react-chessboard`
+- Move validation and game state management with `chess.js` (both client and server-side)
+- Real-time multiplayer via Socket.io (moves sync instantly)
+- Clean monorepo structure with separate frontend and backend
+- Local development with hot reloading for both sides
+- Ready for deployment to Azure (Static Web Apps + App Service or Functions)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- Node.js (LTS recommended: v20 or v22)
+- npm (comes with Node.js)
+- Git
+- A GitHub account (for version control)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Local Development Setup
 
-### `npm run build`
+### 1. Clone and Install Dependencies
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/karvaporsas/torochess.git
+cd torochess
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Install frontend dependencies
+cd frontend
+npm install
+cd ..
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install backend dependencies
+cd backend
+npm install
+cd ..
+```
 
-### `npm run eject`
+### 2. Environment Variables
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Create a `.env` file in the `backend/` folder:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+PORT=5000
+CLIENT_ORIGIN=http://localhost:3000
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3. Run the Application
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+From the project root, use one command to start both servers:
 
-## Learn More
+```bash
+npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This uses `concurrently` to run:
+- Frontend: http://localhost:3000 (React dev server with hot reload)
+- Backend: http://localhost:5000 (Node.js with nodemon auto-restart)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Open http://localhost:3000 in your browser to play!
 
-### Code Splitting
+### Alternative: Run Separately
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+# Terminal 1 - Frontend
+cd frontend
+npm start
 
-### Analyzing the Bundle Size
+# Terminal 2 - Backend
+cd backend
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Scripts (Root Level)
 
-### Making a Progressive Web App
+Add these to your root `package.json` for easy development:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```json
+"scripts": {
+  "dev": "concurrently \"npm start --prefix frontend\" \"npm run dev --prefix backend\""
+}
+```
 
-### Advanced Configuration
+Backend scripts (in `backend/package.json`):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```json
+"scripts": {
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js"
+}
+```
 
-### Deployment
+## Key Libraries Used
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**Frontend:**
+- `react-chessboard` – Beautiful, responsive, draggable chessboard
+- `chess.js` – Chess move validation, FEN/PGN, checkmate detection
+- `socket.io-client` – Real-time communication
 
-### `npm run build` fails to minify
+**Backend:**
+- `express` – Web server
+- `socket.io` – Real-time bidirectional communication
+- `chess.js` – Server-side move validation (prevents cheating)
+- `cors` & `dotenv` – Cross-origin and config management
+- `nodemon` – Auto-restart during development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Deployment to Azure
+
+- **Frontend**: Deploy via **Azure Static Web Apps** (free tier, GitHub integration)
+- **Backend**: Deploy via **Azure App Service** or **Azure Functions** (with Web PubSub for scaling WebSockets)
+
+GitHub Actions can automate both deployments.
+
+## Contributing
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/amazing-chess`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-chess`)
+5. Open a Pull Request
+
+## Next Features (Planned)
+
+- User authentication
+- Switchabe bots
+- Timer/clock support
+- Mobile responsiveness improvements
+
+## License
+
+MIT License – feel free to use, modify, and share!
+
+---
+
+Made with ❤️ and lots of ♟️ by Karvaporsas
+
+Enjoy playing chess!
