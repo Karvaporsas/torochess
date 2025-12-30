@@ -1,5 +1,6 @@
 import { Chessboard } from 'react-chessboard';
 import React, { useRef, useState } from 'react';
+import MoveList from './MoveList';
 import { Chess } from 'chess.js';
 
 
@@ -8,12 +9,14 @@ function ChessContainer({ gameId }) {
     const chessGame = chessGameRef.current;
     const [chessPosition, setChessPosition] = useState(chessGame.fen());
     const [turn, setTurn] = useState(chessGame.turn());
+    const [moves, setMoves] = useState([]);
 
     if (!gameId) return <div>Loading game...</div>;
 
     function updatePositionAndTurn() {
         setChessPosition(chessGame.fen());
-        setTurn(chessGame.turn());
+        setTurn(chessGame.turn());        
+        setMoves(chessGame.history({ verbose: false }));
     }
     console.log('Rendering ChessContainer for gameId:', gameId);
     async function makeBotMove(playerMove) {
@@ -26,8 +29,8 @@ function ChessContainer({ gameId }) {
             });
             const data = await response.json();
             console.log('Bot move response:', data);
-            if (data.status === 'ok' && data.move && data.fen) {
-                chessGame.load(data.fen);
+            if (data.status === 'ok' && data.move && data.fen) {                
+                chessGame.move(data.move);
                 updatePositionAndTurn();
             } else if (data.fen) {
                 chessGame.load(data.fen);
@@ -42,8 +45,9 @@ function ChessContainer({ gameId }) {
 
     async function onPieceDrop(sourceSquare, targetSquare, piece) {
         if (!targetSquare) return false;
-        const playerMove = { from: sourceSquare, to: targetSquare, promotion: 'q' };
+        const playerMove = { from: sourceSquare, to: targetSquare, promotion: 'q' };        
         try {
+            chessGame.move(playerMove);
             // Let backend validate and update state
             await makeBotMove(playerMove);
             return true;
@@ -59,13 +63,14 @@ function ChessContainer({ gameId }) {
                 position={chessPosition}
                 arePiecesDraggable={true}
                 onPieceDrop={onPieceDrop}                
-                id= {gameId }
+                id={gameId}
             />
             <div className="game-info">
                 <p className="turn-indicator">{turn === 'w' ? 'White' : 'Black'} to move</p>
                 <button className="btn-resign">Resign</button>
                 <button className="btn-draw">Offer Draw</button>
             </div>
+            <MoveList moves={moves} />
         </div>
     );
 }
