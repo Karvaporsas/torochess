@@ -3,7 +3,9 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
+const logToFile = require('./logToFile');
 
+const createBotApiRouter = require('./botApi');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -21,16 +23,30 @@ app.get('/', (req, res) => {
   res.send('Chess backend is running!');
 });
 
+
+const generateGameId = require('./generateGameId');
+const { Chess } = require('chess.js');
 // In-memory storage for active games (replace with DB later if needed)
 const games = new Map(); // gameId → { players: [], board: Chess instance, ... }
 
+// Use botApi router and pass games map
+app.use(createBotApiRouter(games));
+
+// REST endpoint to create a new game and return a unique gameId
+app.post('/api/create-game', (req, res) => {
+  const gameId = generateGameId();
+  logToFile(`Creating new game with gameId: ${gameId}`);
+  games.set(gameId, { players: [], board: new Chess() });
+  res.json({ gameId });
+});
+
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  logToFile(`New user connected: ${socket.id}`);
 
   // Example: Join a game room
   socket.on('joinGame', (gameId) => {
     socket.join(gameId);
-    console.log(`Socket ${socket.id} joined game ${gameId}`);
+    logToFile(`Socket ${socket.id} joined game ${gameId}`);
 
     // Send current game state to the new player
     const game = games.get(gameId);
@@ -52,11 +68,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    logToFile(`User disconnected: ${socket.id}`);
   });
 });
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logToFile(`Server running on port ${PORT}`);
 });
