@@ -9,8 +9,9 @@ torochess/
 ├── frontend/                  # React application (Create React App)
 │   ├── public/
 │   ├── src/
-│   │   ├── components/        # Chessboard and game UI
-│   │   ├── App.js
+│   │   ├── Sidebar.js        # Sidebar navigation component
+│   │   ├── ChessContainer.js # Chessboard and game logic
+│   │   ├── App.js            # Main app layout
 │   │   └── index.js
 │   ├── package.json
 │   └── ...
@@ -23,14 +24,15 @@ torochess/
 └── README.md                  # This file
 ```
 
+
 ## Features
 
-- Fully interactive draggable chessboard using `react-chessboard`
-- Move validation and game state management with `chess.js` (both client and server-side)
-- Real-time multiplayer via Socket.io (moves sync instantly)
+- Interactive draggable chessboard using `react-chessboard` v4 (event handlers work)
+- Move validation and game state management with `chess.js` (client-side)
+- Sidebar navigation (Play, Puzzles, Lessons, etc.)
+- Modern, responsive UI
 - Clean monorepo structure with separate frontend and backend
 - Local development with hot reloading for both sides
-- Ready for deployment to Azure (Static Web Apps + App Service or Functions)
 
 ## Prerequisites
 
@@ -114,10 +116,11 @@ Backend scripts (in `backend/package.json`):
 
 ## Key Libraries Used
 
+
 **Frontend:**
-- `react-chessboard` – Beautiful, responsive, draggable chessboard
+- `react-chessboard@4` – Responsive, draggable chessboard with working events
 - `chess.js` – Chess move validation, FEN/PGN, checkmate detection
-- `socket.io-client` – Real-time communication
+- `socket.io-client` – Real-time communication (planned)
 
 **Backend:**
 - `express` – Web server
@@ -141,10 +144,13 @@ GitHub Actions can automate both deployments.
 4. Push to the branch (`git push origin feature/amazing-chess`)
 5. Open a Pull Request
 
+
 ## Next Features (Planned)
 
 - User authentication
-- Switchabe bots
+- Switchable bots
+- Play vs computer (bot)
+- Real-time multiplayer
 - Timer/clock support
 - Mobile responsiveness improvements
 
