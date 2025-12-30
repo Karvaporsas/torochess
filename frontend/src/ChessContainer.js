@@ -10,6 +10,8 @@ function ChessContainer({ gameId }) {
     const [chessPosition, setChessPosition] = useState(chessGame.fen());
     const [turn, setTurn] = useState(chessGame.turn());
     const [moves, setMoves] = useState([]);
+    const [gameOver, setGameOver] = useState(false);
+    const [winner, setWinner] = useState(null);
 
     if (!gameId) return <div>Loading game...</div>;
 
@@ -20,7 +22,7 @@ function ChessContainer({ gameId }) {
     }
     console.log('Rendering ChessContainer for gameId:', gameId);
     async function makeBotMove(playerMove) {
-        // Call backend API to get bot move, sending gameId and the player's move
+        // Call backend API to get bot move, sending gameId and the player's move      
         try {
             const response = await fetch('http://localhost:5000/api/bot-move', {
                 method: 'POST',
@@ -29,7 +31,13 @@ function ChessContainer({ gameId }) {
             });
             const data = await response.json();
             console.log('Bot move response:', data);
-            if (data.status === 'ok' && data.move && data.fen) {                
+            if (data.status === 'gameover') {
+                updatePositionAndTurn();
+                setGameOver(true);
+                setWinner(data.winner);
+                return;
+            }
+            if (data.status === 'ok' && data.move && data.fen) {
                 chessGame.move(data.move);
                 updatePositionAndTurn();
             } else if (data.fen) {
@@ -58,19 +66,35 @@ function ChessContainer({ gameId }) {
     }
 
     return (
-        <div className="chess-container">
-            <Chessboard
-                position={chessPosition}
-                arePiecesDraggable={true}
-                onPieceDrop={onPieceDrop}                
-                id={gameId}
-            />
+        <div className="chess-container" style={{ position: 'relative' }}>
+            <div>
+                <Chessboard
+                    position={chessPosition}
+                    arePiecesDraggable={!gameOver}
+                    onPieceDrop={onPieceDrop}
+                    id={gameId}
+                />                
+                {gameOver && (
+                <div className="gameover-overlay">
+                    <h2 className="gameover-title">Game Over</h2>
+                    <div className="gameover-winner">
+                        {winner ? `Winner: ${winner.charAt(0).toUpperCase() + winner.slice(1)}` : 'Draw'}
+                    </div>
+                    <button
+                        className="btn gameover-btn"
+                        onClick={() => window.location.reload()} //TODO better reset
+                    >
+                        New Game
+                    </button>
+                </div>
+            )}
+            </div>            
             <div className="game-info">
                 <p className="turn-indicator">{turn === 'w' ? 'White' : 'Black'} to move</p>
                 <button className="btn-resign">Resign</button>
                 <button className="btn-draw">Offer Draw</button>
             </div>
-            <MoveList moves={moves} />
+            <MoveList moves={moves} />            
         </div>
     );
 }
