@@ -1,6 +1,7 @@
+
 # ToroChess ♟️
 
-A browser-based multiplayer chess game built with **React** (frontend) and **Node.js** (backend). Features real-time gameplay using Socket.io, draggable chessboard with full move validation, and ready for deployment on Azure.
+ToroChess is a browser-based chess game built with **React** (frontend) and **Node.js** (backend). Play against a simple bot, view move history, and enjoy a modern, responsive UI. The backend manages stateful games using unique game IDs. Multiplayer and real-time features are planned for the future.
 
 ## Project Structure
 
@@ -10,14 +11,16 @@ torochess/
 │   ├── public/
 │   ├── src/
 │   │   ├── Sidebar.js        # Sidebar navigation component
-│   │   ├── ChessContainer.js # Chessboard and game logic
+│   │   ├── ChessContainer.js # Chessboard, move list, game over overlay
+│   │   ├── MoveList.js       # Move history display
 │   │   ├── App.js            # Main app layout
 │   │   └── index.js
 │   ├── package.json
 │   └── ...
-├── backend/                   # Node.js + Express + Socket.io server
+├── backend/                   # Node.js + Express server
 │   ├── src/
-│   │   └── server.js          # Main server file
+│   │   ├── server.js          # Main server file
+│   │   └── botApi.js          # Bot move API
 │   ├── package.json
 │   └── .env
 ├── .gitignore
@@ -25,11 +28,16 @@ torochess/
 ```
 
 
+
 ## Features
 
-- Interactive draggable chessboard using `react-chessboard` v4 (event handlers work)
-- Move validation and game state management with `chess.js` (client-side)
-- Sidebar navigation (Play, Puzzles, Lessons, etc.)
+- Play chess vs a simple bot (random move selection)
+- Interactive, draggable chessboard using `react-chessboard` v4
+- Move validation and game state management with `chess.js` (frontend and backend)
+- Move list/history display
+- Game over overlay with winner/draw indication
+- Unique game IDs for stateful games (no multiplayer yet)
+- Sidebar navigation (UI only, more features planned)
 - Modern, responsive UI
 - Clean monorepo structure with separate frontend and backend
 - Local development with hot reloading for both sides
@@ -117,14 +125,13 @@ Backend scripts (in `backend/package.json`):
 ## Key Libraries Used
 
 
+
 **Frontend:**
-- `react-chessboard@4` – Responsive, draggable chessboard with working events
+- `react-chessboard@4` – Responsive, draggable chessboard
 - `chess.js` – Chess move validation, FEN/PGN, checkmate detection
-- `socket.io-client` – Real-time communication (planned)
 
 **Backend:**
 - `express` – Web server
-- `socket.io` – Real-time bidirectional communication
 - `chess.js` – Server-side move validation (prevents cheating)
 - `cors` & `dotenv` – Cross-origin and config management
 - `nodemon` – Auto-restart during development
@@ -145,12 +152,12 @@ GitHub Actions can automate both deployments.
 5. Open a Pull Request
 
 
+
 ## Next Features (Planned)
 
 - User authentication
 - Switchable bots
-- Play vs computer (bot)
-- Real-time multiplayer
+- Real-time multiplayer (Socket.io)
 - Timer/clock support
 - Mobile responsiveness improvements
 
