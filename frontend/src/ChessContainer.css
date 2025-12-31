@@ -1,0 +1,80 @@
+/* ChessContainer specific styles */
+.chess-container {
+  position: relative;
+}
+
+.chess-flex-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.chessboard-section {
+  flex: 1 1 400px;
+  min-width: 0;
+}
+
+.movelist-section {
+  flex: 0 0 260px;
+  min-width: 220px;
+  max-width: 320px;
+}
+
+@media (max-width: 900px) {
+  .chess-flex-layout {
+    flex-direction: column;
+  }
+  .movelist-section {
+    max-width: 100%;
+    width: 100%;
+    margin-top: 24px;
+  }
+}
+
+/* Add more styles here as needed for ChessContainer */
+
+/* MoveList styles */
+.move-list {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 16px 16px 16px;
+  box-shadow: 0 2px 12px rgba(44,62,80,0.10);
+  transition: box-shadow 0.2s, background 0.2s;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.move-list-title {
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+.move-list-empty {
+  color: #aaa;
+  font-style: italic;
+  padding: 8px 0;
+}
+.move-list-ol {
+  padding-left: 20px;
+  margin: 0;
+}
+.move-list-li {
+  margin-bottom: 4px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.move-list-li-white {
+  background: #f7fafd;
+}
+.move-list-li-black {
+  background: #e6eaf2;
+}
+.move-list-li:hover {
+  background: #d1eaff;
+  cursor: pointer;
+}

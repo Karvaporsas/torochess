@@ -1,4 +1,5 @@
 import { Chessboard } from 'react-chessboard';
+import './ChessContainer.css';
 import React, { useRef, useState } from 'react';
 import MoveList from './MoveList';
 import { Chess } from 'chess.js';
@@ -66,35 +67,39 @@ function ChessContainer({ gameId }) {
     }
 
     return (
-        <div className="chess-container" style={{ position: 'relative' }}>
-            <div>
-                <Chessboard
-                    position={chessPosition}
-                    arePiecesDraggable={!gameOver}
-                    onPieceDrop={onPieceDrop}
-                    id={gameId}
-                />                
-                {gameOver && (
-                <div className="gameover-overlay">
-                    <h2 className="gameover-title">Game Over</h2>
-                    <div className="gameover-winner">
-                        {winner ? `Winner: ${winner.charAt(0).toUpperCase() + winner.slice(1)}` : 'Draw'}
+        <div className="chess-container">
+            <div className="chess-flex-layout">
+                <div className="chessboard-section">
+                    <Chessboard
+                        position={chessPosition}
+                        arePiecesDraggable={!gameOver}
+                        onPieceDrop={onPieceDrop}
+                        id={gameId}
+                    />
+                    {gameOver && (
+                        <div className="gameover-overlay">
+                            <h2 className="gameover-title">Game Over</h2>
+                            <div className="gameover-winner">
+                                {winner ? `Winner: ${winner.charAt(0).toUpperCase() + winner.slice(1)}` : 'Draw'}
+                            </div>
+                            <button
+                                className="btn gameover-btn"
+                                onClick={() => window.location.reload()} //TODO better reset
+                            >
+                                New Game
+                            </button>
+                        </div>
+                    )}
+                    <div className="game-info">
+                        <p className="turn-indicator">{turn === 'w' ? 'White' : 'Black'} to move</p>
+                        <button className="btn-resign">Resign</button>
+                        <button className="btn-draw">Offer Draw</button>
                     </div>
-                    <button
-                        className="btn gameover-btn"
-                        onClick={() => window.location.reload()} //TODO better reset
-                    >
-                        New Game
-                    </button>
                 </div>
-            )}
-            </div>            
-            <div className="game-info">
-                <p className="turn-indicator">{turn === 'w' ? 'White' : 'Black'} to move</p>
-                <button className="btn-resign">Resign</button>
-                <button className="btn-draw">Offer Draw</button>
+                <div className="movelist-section">
+                    <MoveList moves={moves} />
+                </div>
             </div>
-            <MoveList moves={moves} />            
         </div>
     );
 }

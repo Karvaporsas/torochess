@@ -218,7 +218,7 @@ body {
 
 .chess-container {  
   width: 100%;
-  max-width: 800px;     /* Your ideal maximum board size */
+  max-width: 1000px;     /* Your ideal maximum board size */
   margin: 0 auto;       /* Center it */
   text-align: center;
 }
